@@ -4,9 +4,29 @@
 }
 body {
    min-height: 100vh;
-   padding: 30px;
+}
+/* ************** */
+/* GAME OPTION */
+.game-option {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background: rgba(0, 0, 0, 0.775);
+   position: absolute;
+   top: 0;
+   width: 100vw;
+   height: 100vh;
+   color: white;
+   z-index: 1;
+   gap: 30px;
+}
+.game-option.hidden{
+   display: none;
 }
 
+
+/* ************** */
+/* GAMEBOARD */
 .game-board {
    height: 300px;
    width: 300px;
@@ -18,4 +38,14 @@ body {
 }
 .square {
    border: 1px solid black;
+}
+
+/* ************** */
+/* DISPLAY */
+.winner-display {
+   opacity: 0;
+}
+.winner-display.active {
+   opacity : 1;
+   display: show;
 }
