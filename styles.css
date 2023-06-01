@@ -5,6 +5,15 @@
 body {
    min-height: 100vh;
 }
+
+main {
+   height: 100vh;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+
 /* ************** */
 /* GAME OPTION */
 .game-option {
@@ -24,7 +33,6 @@ body {
    display: none;
 }
 
-
 /* ************** */
 /* GAMEBOARD */
 .game-board {
@@ -38,6 +46,9 @@ body {
 }
 .square {
    border: 1px solid black;
+   display: flex;
+   justify-content: center;
+   align-items: center;
 }
 
 /* ************** */
