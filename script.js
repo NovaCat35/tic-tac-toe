@@ -1,7 +1,7 @@
 const gameBoard = (() => {
-	const row1 = [null, null, null];
-	const row2 = [null, null, null];
-	const row3 = [null, null, null];
+	const row1 = ["", "", ""];
+	const row2 = ["", "", ""];
+	const row3 = ["", "", ""];
 	const board = [row1, row2, row3];
 
 	const updateBoard = (target) => {
@@ -25,40 +25,63 @@ const player = (sign) => {
 
 // Controls the logic of player clicks and outputs them into the gameBoard. Updates gameBoard with playerInput
 const controller = () => {
+	// --- EVENT LISTENERS --- //
 	const _gameOption = document.querySelector(".game-option");
+	const displayWinner = document.querySelector(".winner-display");
+	const { updateBoard, board } = gameBoard;
+	let gameType = "";
+
 	// OPTION: PVP
 	document.querySelector(".pvp").addEventListener("click", () => {
+		gameType = "pvp";
 		_gameOption.classList.add("hidden");
 		_playerVSplayer();
 	});
 	// OPTION: BOT
 	document.querySelector(".bot").addEventListener("click", () => {
+		gameType = "bot";
 		_gameOption.classList.add("hidden");
 		_playerVSbot();
 	});
+	// RESET BTN
+	const _resetBtn = document.querySelector(".reset-btn");
+	_resetBtn.addEventListener("click", _resetGame);
 
-	const { updateBoard, board } = gameBoard;
+	function _resetGame() {
+		displayWinner.textContent = "";
+      displayWinner.classList.remove("active");
+
+		const squares = document.querySelectorAll(".square");
+		squares.forEach((square) => {
+			square.textContent = "";
+			updateBoard(square);
+		});
+		if (gameType === "pvp") {
+			_playerVSplayer();
+		} else {
+			_playerVSbot();
+		}
+	}
 
 	function _displayWinner(winner) {
-		const displayWinner = document.querySelector(".winner-display");
 		displayWinner.textContent = `Player ${winner} wins!`;
-		displayWinner.classList.toggle("active");
+		displayWinner.classList.add("active");
 	}
 
 	function _checkWinner() {
 		// Check rows
 		for (let i = 0; i < 3; i++) {
-			if (board[i][0] !== null && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return board[i][0];
+			if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return board[i][0];
 		}
 		// Check columns
 		for (let j = 0; j < 3; j++) {
-			if (board[0][j] !== null && board[0][j] === board[1][j] && board[1][j] == board[2][j]) return board[0][j];
+			if (board[0][j] !== "" && board[0][j] === board[1][j] && board[1][j] == board[2][j]) return board[0][j];
 		}
 		// Check diagonals
-		if (board[0][0] !== null && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return board[0][0];
-		if (board[0][2] !== null && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return board[2][0];
+		if (board[0][0] !== "" && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return board[0][0];
+		if (board[0][2] !== "" && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return board[2][0];
 
-		return null; //return null if no winners
+		return ""; //return '' if no winners
 	}
 
 	function _setPlayerInputX(event) {
@@ -76,7 +99,7 @@ const controller = () => {
 		let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
 		// choose index at random
 		rndIndex = Math.floor(Math.random() * emptySquareList.length);
-      emptySquareList[rndIndex].textContent = "O";
+		emptySquareList[rndIndex].textContent = "O";
 		updateBoard(emptySquareList[rndIndex]);
 	}
 
@@ -106,7 +129,7 @@ const controller = () => {
 			if (currentSquare === 0) {
 				_uploadPlayerSign.call(null, event, player1, player2);
 				// Check if we have a winner, IF YES then display result but remove further player inputs
-				if (_checkWinner() !== null) {
+				if (_checkWinner() !== "") {
 					const winner = _checkWinner();
 					_displayWinner(winner);
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
@@ -123,7 +146,7 @@ const controller = () => {
 
 		function checkBoardForWinner() {
 			// Check if we have a winner, IF YES then display result but remove further player inputs
-			if (_checkWinner() !== null) {
+			if (_checkWinner() !== "") {
 				const winner = _checkWinner();
 				_displayWinner(winner);
 				return true;
@@ -140,11 +163,11 @@ const controller = () => {
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
 					setTimeout(() => {
-                  botMove(squares)
-                  if (checkBoardForWinner()) {
-                     squares.forEach((square) => square.removeEventListener("click", clickHandler));
-                  }
-               }, 500);
+						botMove(squares);
+						if (checkBoardForWinner()) {
+							squares.forEach((square) => square.removeEventListener("click", clickHandler));
+						}
+					}, 500);
 				}
 			}
 		};

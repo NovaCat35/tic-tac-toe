@@ -14,6 +14,16 @@ main {
    align-items: center;
 }
 
+.reset-btn {
+   position: absolute;
+   top: 20px;
+   right: 30px;
+   height: 50px;
+   width: 50px;
+   border-radius: 50%;
+   background-image: url(assets/refresh.svg);
+}
+
 /* ************** */
 /* GAME OPTION */
 .game-option {
@@ -52,7 +62,7 @@ main {
 }
 
 /* ************** */
-/* DISPLAY */
+/* DISPLAY & SCOREBOARD*/
 .winner-display {
    opacity: 0;
 }
