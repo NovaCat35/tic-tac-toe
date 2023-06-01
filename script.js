@@ -76,8 +76,8 @@ const controller = () => {
 		let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
 		// choose index at random
 		rndIndex = Math.floor(Math.random() * emptySquareList.length);
+      emptySquareList[rndIndex].textContent = "O";
 		updateBoard(emptySquareList[rndIndex]);
-		emptySquareList[rndIndex].textContent = "O";
 	}
 
 	function _uploadPlayerSign(event, player1, player2 = false) {
@@ -105,7 +105,6 @@ const controller = () => {
 			// ONLY input player's sign IF square slot is empty
 			if (currentSquare === 0) {
 				_uploadPlayerSign.call(null, event, player1, player2);
-
 				// Check if we have a winner, IF YES then display result but remove further player inputs
 				if (_checkWinner() !== null) {
 					const winner = _checkWinner();
@@ -122,7 +121,7 @@ const controller = () => {
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
 
-		function checkBoard() {
+		function checkBoardForWinner() {
 			// Check if we have a winner, IF YES then display result but remove further player inputs
 			if (_checkWinner() !== null) {
 				const winner = _checkWinner();
@@ -137,11 +136,15 @@ const controller = () => {
 			// square slot is empty
 			if (currentSquare === 0) {
 				_uploadPlayerSign.call(null, event, player1);
-				if (checkBoard()) {
+				if (checkBoardForWinner()) {
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
-					botMove(squares);
-					checkBoard();
+					setTimeout(() => {
+                  botMove(squares)
+                  if (checkBoardForWinner()) {
+                     squares.forEach((square) => square.removeEventListener("click", clickHandler));
+                  }
+               }, 500);
 				}
 			}
 		};
