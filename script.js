@@ -49,7 +49,7 @@ const controller = () => {
 
 	function _resetGame() {
 		displayWinner.textContent = "";
-      displayWinner.classList.remove("active");
+		displayWinner.classList.remove("active");
 
 		const squares = document.querySelectorAll(".square");
 		squares.forEach((square) => {
@@ -65,6 +65,11 @@ const controller = () => {
 
 	function _displayWinner(winner) {
 		displayWinner.textContent = `Player ${winner} wins!`;
+		displayWinner.classList.add("active");
+	}
+
+	function _displayTie() {
+		displayWinner.textContent = "It's a TIE!";
 		displayWinner.classList.add("active");
 	}
 
@@ -116,6 +121,15 @@ const controller = () => {
 		}
 	}
 
+	function _checkFullSquare(squares) {
+		const emptySquaresAvailable = Array.from(squares).filter((square) => square.textContent.length === 0).length;
+		// Board is filled (all squares filled)
+		if (emptySquaresAvailable === 0) {
+			return true;
+		}
+		return false;
+	}
+
 	// PVP: All squares on click will check current player's sign and display on game board
 	function _playerVSplayer() {
 		const player1 = player("X");
@@ -133,6 +147,10 @@ const controller = () => {
 					const winner = _checkWinner();
 					_displayWinner(winner);
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
+				} else {
+					if (_checkFullSquare(squares)) {
+						_displayTie();
+					}
 				}
 			}
 		};
@@ -163,10 +181,14 @@ const controller = () => {
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
 					setTimeout(() => {
-						botMove(squares);
-						if (checkBoardForWinner()) {
-							squares.forEach((square) => square.removeEventListener("click", clickHandler));
-						}
+                  if (_checkFullSquare(squares)) {
+                     _displayTie();
+                  } else {
+                     botMove(squares);
+                     if (checkBoardForWinner()) {
+                        squares.forEach((square) => square.removeEventListener("click", clickHandler));
+                     }
+                  }
 					}, 500);
 				}
 			}
