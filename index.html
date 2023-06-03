@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="styles.css">
-   <title>Document</title>
-</head>
-<body>
-   <main>
-      <button class="reset-btn"></button>
-      
-      <h1>TIC-TAC-TOE</h1>
-      <div class="game-option">
-         <div class="option pvp">Player VS Player</div>
-         <div class="option bot">Player VS Bot</div>
-      </div>
-      <div class="winner-display"></div>
-      <div class="game-board">
-         <div class="square" data-row="0" data-column="0"></div>
-         <div class="square" data-row="0" data-column="1"></div>
-         <div class="square" data-row="0" data-column="2"></div>
-         <div class="square" data-row="1" data-column="0"></div>
-         <div class="square" data-row="1" data-column="1"></div>
-         <div class="square" data-row="1" data-column="2"></div>
-         <div class="square" data-row="2" data-column="0"></div>
-         <div class="square" data-row="2" data-column="1"></div>
-         <div class="square" data-row="2" data-column="2"></div>
-      </div>
-   </main>
-   <footer></footer>
-   <script src="script.js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="styles.css" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div class="header">
+			<h1>TIC-TAC-TOE</h1>
+			<button class="reset-btn"></button>
+			<div class="scoreboard">
+				<div class="scoreboard-x"><span class="name"></span><span class="score">0</span></div>
+				<div class="scoreboard-o"><span class="name"></span><span class="score">0</span></div>
+			</div>
+		</div>
+		<main>
+			<div class="game-option">
+				<div class="option pvp">Player VS Player</div>
+				<div class="option bot">Player VS Bot</div>
+			</div>
+			<div class="result-display"></div>
+			<div class="game-board">
+				<div class="square" data-row="0" data-column="0"></div>
+				<div class="square" data-row="0" data-column="1"></div>
+				<div class="square" data-row="0" data-column="2"></div>
+				<div class="square" data-row="1" data-column="0"></div>
+				<div class="square" data-row="1" data-column="1"></div>
+				<div class="square" data-row="1" data-column="2"></div>
+				<div class="square" data-row="2" data-column="0"></div>
+				<div class="square" data-row="2" data-column="1"></div>
+				<div class="square" data-row="2" data-column="2"></div>
+			</div>
+		</main>
+		<footer>
+			Made by NovaCat35
+			<a href="https://github.com/NovaCat35/tic-tac-toe">
+				<img src="assets/github.svg" alt="github icon" />
+			</a>
+		</footer>
+		<script src="script.js"></script>
+	</body>
 </html>

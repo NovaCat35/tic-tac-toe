@@ -27,7 +27,7 @@ const player = (sign) => {
 const controller = () => {
 	// --- EVENT LISTENERS --- //
 	const _gameOption = document.querySelector(".game-option");
-	const displayWinner = document.querySelector(".winner-display");
+	const displayResult = document.querySelector(".result-display");
 	const { updateBoard, board } = gameBoard;
 	let gameType = "";
 
@@ -48,8 +48,8 @@ const controller = () => {
 	_resetBtn.addEventListener("click", _resetGame);
 
 	function _resetGame() {
-		displayWinner.textContent = "";
-		displayWinner.classList.remove("active");
+		displayResult.textContent = "";
+		displayResult.classList.remove("active");
 
 		const squares = document.querySelectorAll(".square");
 		squares.forEach((square) => {
@@ -64,14 +64,23 @@ const controller = () => {
 	}
 
 	function _displayWinner(winner) {
-		displayWinner.textContent = `Player ${winner} wins!`;
-		displayWinner.classList.add("active");
+		displayResult.textContent = `Player ${winner} wins the round!`;
+		displayResult.classList.add("active");
 	}
 
 	function _displayTie() {
-		displayWinner.textContent = "It's a TIE!";
-		displayWinner.classList.add("active");
+		displayResult.textContent = "It's a TIE!";
+		displayResult.classList.add("active");
 	}
+
+   function _displayTurn(player) {
+      if(player === 'Your') {
+         displayResult.textContent = `Your Turn`
+      }
+      else {
+         displayResult.textContent = `${player}'s Turn`
+      }
+   }
 
 	function _checkWinner() {
 		// Check rows
@@ -130,13 +139,48 @@ const controller = () => {
 		return false;
 	}
 
-	// PVP: All squares on click will check current player's sign and display on game board
+	function _updateScore(winner) {
+		const scoreboardX = document.querySelector(".scoreboard-x > .score");
+		const scoreboardO = document.querySelector(".scoreboard-o > .score");
+		if (winner === "X") {
+			scoreboardX.textContent = Number(scoreboardX.textContent) + 1;
+		} else {
+			scoreboardO.textContent = Number(scoreboardO.textContent) + 1;
+		}
+	}
+
+	function _setName(p1, p2) {
+		const setName1 = document.querySelector(".scoreboard-x > .name");
+		const setName2 = document.querySelector(".scoreboard-o > .name");
+		if (p2 !== "bot") {
+			setName1.textContent = `PLAYER ${p1}`;
+			setName2.textContent = `PLAYER ${p2}`;
+		} else {
+			setName1.textContent = `PLAYER`;
+			setName2.textContent = `BOT`;
+		}
+	}
+
+
 	function _playerVSplayer() {
 		const player1 = player("X");
 		const player2 = player("O");
 		const squares = document.querySelectorAll(".square");
+      let p1Turn = true;
+
+		_setName(player1.playerSign, player2.playerSign);
+      _displayTurn(player1.playerSign);
 
 		const clickHandler = function (event) {
+         // Display current player's turn
+         if(p1Turn) {
+            _displayTurn(player2.playerSign);
+            p1Turn = false;
+         } else {
+            _displayTurn(player1.playerSign);
+            p1Turn = true;
+         }
+
 			let currentSquare = event.target.textContent.length;
 
 			// ONLY input player's sign IF square slot is empty
@@ -146,6 +190,7 @@ const controller = () => {
 				if (_checkWinner() !== "") {
 					const winner = _checkWinner();
 					_displayWinner(winner);
+					_updateScore(winner);
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
 					if (_checkFullSquare(squares)) {
@@ -161,35 +206,50 @@ const controller = () => {
 	function _playerVSbot() {
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
+      let p1Turn = true;
+      _setName(player1.playerSign, "bot");
+      _displayTurn('Your');
 
 		function checkBoardForWinner() {
 			// Check if we have a winner, IF YES then display result but remove further player inputs
 			if (_checkWinner() !== "") {
 				const winner = _checkWinner();
 				_displayWinner(winner);
+				_updateScore(winner);
 				return true;
 			}
 		}
 
 		const clickHandler = function (event) {
+         // Display current player's turn
+         if(p1Turn) {
+            _displayTurn(`Bot`);
+            p1Turn = false;
+         } else {
+            _displayTurn('Your');
+            p1Turn = true;
+         }
+
 			let currentSquare = event.target.textContent.length;
 
-			// square slot is empty
+			// Square slot is empty
 			if (currentSquare === 0) {
 				_uploadPlayerSign.call(null, event, player1);
 				if (checkBoardForWinner()) {
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
 					setTimeout(() => {
-                  if (_checkFullSquare(squares)) {
-                     _displayTie();
-                  } else {
-                     botMove(squares);
-                     if (checkBoardForWinner()) {
-                        squares.forEach((square) => square.removeEventListener("click", clickHandler));
-                     }
-                  }
-					}, 500);
+                  // Check for tie
+						if (_checkFullSquare(squares)) {
+							_displayTie();
+						} else {
+							botMove(squares);
+                     _displayTurn('Your');
+							if (checkBoardForWinner()) {
+								squares.forEach((square) => square.removeEventListener("click", clickHandler));
+							}
+						}
+					}, 400);
 				}
 			}
 		};
