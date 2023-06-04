@@ -50,10 +50,12 @@ const controller = () => {
 	function _resetGame() {
 		displayResult.textContent = "";
 		displayResult.classList.remove("active");
+		displayResult.classList.remove("tie");
 
 		const squares = document.querySelectorAll(".square");
 		squares.forEach((square) => {
 			square.textContent = "";
+			square.classList.remove("active");
 			updateBoard(square);
 		});
 		if (gameType === "pvp") {
@@ -63,37 +65,45 @@ const controller = () => {
 		}
 	}
 
-	function _displayWinner(winner) {
+	// The winners are the 3 winning squares
+	function _displayWinner(winner, square1, square2, square3) {
+		const squareSlot1 = document.querySelector(`[data-row="${square1[0]}"][data-column="${square1[1]}"]`);
+		const squareSlot2 = document.querySelector(`[data-row="${square2[0]}"][data-column="${square2[1]}"]`);
+		const squareSlot3 = document.querySelector(`[data-row="${square3[0]}"][data-column="${square3[1]}"]`);
+
 		displayResult.textContent = `Player ${winner} wins the round!`;
 		displayResult.classList.add("active");
+		squareSlot1.classList.add("active");
+		squareSlot2.classList.add("active");
+		squareSlot3.classList.add("active");
 	}
 
-	function _displayTie() {
+	function _displayTie(squares) {
 		displayResult.textContent = "It's a TIE!";
 		displayResult.classList.add("active");
+		squares.forEach((square) => square.classList.add("tie"));
 	}
 
-   function _displayTurn(player) {
-      if(player === 'Your') {
-         displayResult.textContent = `Your Turn`
-      }
-      else {
-         displayResult.textContent = `${player}'s Turn`
-      }
-   }
+	function _displayTurn(player) {
+		if (player === "Your") {
+			displayResult.textContent = `Your Turn`;
+		} else {
+			displayResult.textContent = `${player}'s Turn`;
+		}
+	}
 
 	function _checkWinner() {
 		// Check rows
 		for (let i = 0; i < 3; i++) {
-			if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return board[i][0];
+			if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return { winner: board[i][0], square1: [i, 0], square2: [i, 1], square3: [i, 2] };
 		}
 		// Check columns
 		for (let j = 0; j < 3; j++) {
-			if (board[0][j] !== "" && board[0][j] === board[1][j] && board[1][j] == board[2][j]) return board[0][j];
+			if (board[0][j] !== "" && board[0][j] === board[1][j] && board[1][j] == board[2][j]) return { winner: board[0][j], square1: [0, j], square2: [1, j], square3: [2, j] };
 		}
 		// Check diagonals
-		if (board[0][0] !== "" && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return board[0][0];
-		if (board[0][2] !== "" && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return board[2][0];
+		if (board[0][0] !== "" && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return { winner: board[0][0], square1: [0, 0], square2: [1, 1], square3: [2, 2] };
+		if (board[0][2] !== "" && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return { winner: board[2][0], square1: [0, 2], square2: [1, 1], square3: [2, 0] };
 
 		return ""; //return '' if no winners
 	}
@@ -161,40 +171,42 @@ const controller = () => {
 		}
 	}
 
-
 	function _playerVSplayer() {
 		const player1 = player("X");
 		const player2 = player("O");
 		const squares = document.querySelectorAll(".square");
-      let p1Turn = true;
+		let p1Turn = true;
 
 		_setName(player1.playerSign, player2.playerSign);
-      _displayTurn(player1.playerSign);
+		_displayTurn(player1.playerSign);
+
+		function announceTurn() {
+			// Display current player's turn
+			if (p1Turn) {
+				_displayTurn(player2.playerSign);
+				p1Turn = false;
+			} else {
+				_displayTurn(player1.playerSign);
+				p1Turn = true;
+			}
+		}
 
 		const clickHandler = function (event) {
-         // Display current player's turn
-         if(p1Turn) {
-            _displayTurn(player2.playerSign);
-            p1Turn = false;
-         } else {
-            _displayTurn(player1.playerSign);
-            p1Turn = true;
-         }
-
 			let currentSquare = event.target.textContent.length;
+			announceTurn();
 
 			// ONLY input player's sign IF square slot is empty
 			if (currentSquare === 0) {
 				_uploadPlayerSign.call(null, event, player1, player2);
 				// Check if we have a winner, IF YES then display result but remove further player inputs
 				if (_checkWinner() !== "") {
-					const winner = _checkWinner();
-					_displayWinner(winner);
+					const { winner, square1, square2, square3 } = _checkWinner();
+					_displayWinner(winner, square1, square2, square3);
 					_updateScore(winner);
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				} else {
 					if (_checkFullSquare(squares)) {
-						_displayTie();
+						_displayTie(squares);
 					}
 				}
 			}
@@ -206,49 +218,60 @@ const controller = () => {
 	function _playerVSbot() {
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
-      let p1Turn = true;
-      _setName(player1.playerSign, "bot");
-      _displayTurn('Your');
+		let p1Turn = true;
+		let allowClick = true;
+		_setName(player1.playerSign, "bot");
+		_displayTurn("Your");
 
 		function checkBoardForWinner() {
 			// Check if we have a winner, IF YES then display result but remove further player inputs
 			if (_checkWinner() !== "") {
-				const winner = _checkWinner();
-				_displayWinner(winner);
+				const { winner, square1, square2, square3 } = _checkWinner();
+				_displayWinner(winner, square1, square2, square3);
 				_updateScore(winner);
 				return true;
 			}
 		}
 
-		const clickHandler = function (event) {
-         // Display current player's turn
-         if(p1Turn) {
-            _displayTurn(`Bot`);
-            p1Turn = false;
-         } else {
-            _displayTurn('Your');
-            p1Turn = true;
-         }
+		function announceTurn() {
+			// Display current player's turn
+			if (p1Turn) {
+				_displayTurn(`Bot`);
+				p1Turn = false;
+			} else {
+				_displayTurn("Your");
+				p1Turn = true;
+			}
+		}
 
+		const clickHandler = function (event) {
+			// Ignore the click if allowClick is false
+			if (!allowClick) {
+				return;
+			}
 			let currentSquare = event.target.textContent.length;
+			announceTurn();
 
 			// Square slot is empty
 			if (currentSquare === 0) {
+				allowClick = false; // Pause the event listener
 				_uploadPlayerSign.call(null, event, player1);
 				if (checkBoardForWinner()) {
 					squares.forEach((square) => square.removeEventListener("click", clickHandler));
+				} else if (_checkFullSquare(squares)) {
+					_displayTie(squares);
 				} else {
 					setTimeout(() => {
-                  // Check for tie
-						if (_checkFullSquare(squares)) {
-							_displayTie();
+						botMove(squares); // Bot's makes turn
+						_displayTurn("Your"); // Automatically display 'Your Turn', can be overridden if we have bot as winner or tie
+						if (checkBoardForWinner()) {
+							squares.forEach((square) => square.removeEventListener("click", clickHandler));
 						} else {
-							botMove(squares);
-                     _displayTurn('Your');
-							if (checkBoardForWinner()) {
-								squares.forEach((square) => square.removeEventListener("click", clickHandler));
+							if (_checkFullSquare(squares)) {
+								_displayTie(squares);
 							}
 						}
+						allowClick = true; // Resume the event listener
 					}, 400);
 				}
 			}

@@ -106,6 +106,12 @@ main {
 	justify-content: center;
 	align-items: center;
 }
+.square.active {
+   color: green;
+}
+.square.tie {
+   color: rgb(233, 193, 19);
+}
 
 /*****************/
 /***** FOOTER *****/
