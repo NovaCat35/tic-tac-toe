@@ -105,8 +105,12 @@ main {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+   transition: font-size .5s ease-in;
 }
 .square.active {
+   animation: addingPlayerSign 0.3s forwards;
+}
+.square.win {
    color: green;
 }
 .square.tie {
@@ -138,6 +142,17 @@ footer img:hover {
    transform: rotate(360deg);
 }
 
+@keyframes addingPlayerSign {
+   0% {
+      font-size: 0;
+   }
+   50% {
+      font-size: 4rem;
+   }
+   100% {
+      font-size: 3rem;
+   }
+}
 @media screen and (min-width: 510px) {
 	.reset-btn {
 		top: 30px;
