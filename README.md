@@ -9,4 +9,8 @@ Learning Goals
 - Adding bots and min-max algo
 - More animation practices
 
+Feature:
+- Responsive design
+- Bot levels
+
 ICONS: https://pictogrammers.com/library/mdi/

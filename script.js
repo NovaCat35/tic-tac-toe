@@ -49,9 +49,9 @@ const controller = () => {
 	_resetBtn.addEventListener("click", _resetGame);
 
 	function _resetGame() {
-		// displayResult.classList.remove("active");
-		// displayResult.classList.remove("tie");
-      // displayResult.classList.remove("win");
+      displayResult.classList.remove("win");
+      displayResult.classList.remove("tie");
+
 		const squares = document.querySelectorAll(".square");
 
 		squares.forEach((square) => {

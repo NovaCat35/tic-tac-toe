@@ -5,9 +5,16 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="styles.css" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Beth+Ellen&family=Bona+Nova&family=Cabin+Sketch:wght@400;700&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script:wght@400;700&family=Ewert&family=Fasthand&family=Fredericka+the+Great&family=Libre+Baskerville&family=Lily+Script+One&family=Lora&family=Merriweather:wght@400;900&family=Monoton&family=Playfair+Display:wght@400;500&family=Quicksand&family=Raleway&family=Righteous&family=Rubik+Pixels&family=Special+Elite&family=Work+Sans:wght@300;400&display=swap" rel="stylesheet" />
 		<title>Document</title>
 	</head>
 	<body>
+		<div class="game-option">
+			<div class="option pvp">Player VS Player</div>
+			<div class="option bot">Player VS Bot</div>
+		</div>
 		<div class="header">
 			<h1>TIC-TAC-TOE</h1>
 			<button class="reset-btn"></button>
@@ -15,13 +22,9 @@
 				<div class="scoreboard-x"><span class="name"></span><span class="score">0</span></div>
 				<div class="scoreboard-o"><span class="name"></span><span class="score">0</span></div>
 			</div>
+			<div class="result-display"></div>
 		</div>
 		<main>
-			<div class="game-option">
-				<div class="option pvp">Player VS Player</div>
-				<div class="option bot">Player VS Bot</div>
-			</div>
-			<div class="result-display"></div>
 			<div class="game-board">
 				<div class="square" data-row="0" data-column="0"></div>
 				<div class="square" data-row="0" data-column="1"></div>
@@ -35,7 +38,7 @@
 			</div>
 		</main>
 		<footer>
-         <a href="https://github.com/NovaCat35/tic-tac-toe">
+			<a href="https://github.com/NovaCat35/tic-tac-toe">
 				<img src="assets/github.svg" alt="github icon" />
 			</a>
 			Made by NovaCat35
