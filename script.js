@@ -30,7 +30,7 @@ const controller = () => {
 	const displayResult = document.querySelector(".result-display");
 	const { updateBoard, board } = gameBoard;
 	let gameType = "";
-   let clickHandler;
+	let clickHandler, hoverHandler, leaveHandler;
 
 	// OPTION: PVP
 	document.querySelector(".pvp").addEventListener("click", () => {
@@ -49,8 +49,8 @@ const controller = () => {
 	_resetBtn.addEventListener("click", _resetGame);
 
 	function _resetGame() {
-      displayResult.classList.remove("win");
-      displayResult.classList.remove("tie");
+		displayResult.classList.remove("win");
+		displayResult.classList.remove("tie");
 
 		const squares = document.querySelectorAll(".square");
 
@@ -58,8 +58,9 @@ const controller = () => {
 			square.textContent = "";
 			square.classList.remove("active");
 			square.classList.remove("tie");
-			square.classList.remove("win");   
-         square.removeEventListener("click", clickHandler);
+			square.classList.remove("win");
+			square.removeEventListener("click", clickHandler);
+			square.removeEventListener("mouseover", hoverHandler);
 			updateBoard(square);
 		});
 
@@ -115,13 +116,13 @@ const controller = () => {
 
 	function _setPlayerInputX(event) {
 		event.target.textContent = "X";
-      event.target.classList.add('active');
+		event.target.classList.add("active");
 		updateBoard(event.target);
 	}
 
 	function _setPlayerInputY(event) {
 		event.target.textContent = "O";
-      event.target.classList.add('active');
+		event.target.classList.add("active");
 		updateBoard(event.target);
 	}
 
@@ -131,7 +132,7 @@ const controller = () => {
 		// choose index at random
 		rndIndex = Math.floor(Math.random() * emptySquareList.length);
 		emptySquareList[rndIndex].textContent = "O";
-      emptySquareList[rndIndex].classList.add('active');
+		emptySquareList[rndIndex].classList.add("active");
 		updateBoard(emptySquareList[rndIndex]);
 	}
 
@@ -145,6 +146,14 @@ const controller = () => {
 		} else {
 			_setPlayerInputY(event);
 			player1.playerActive = true;
+		}
+	}
+
+	function _hoverShowPlayerSign(target, player1) {
+		if (player1.playerActive) {
+			target.classList.add("squareHoverX");
+		} else {
+			target.classList.add("squareHoverO");
 		}
 	}
 
@@ -179,6 +188,7 @@ const controller = () => {
 		}
 	}
 
+	// ------ PLAYER VS PLAYER --------
 	function _playerVSplayer() {
 		const player1 = player("X");
 		const player2 = player("O");
@@ -199,32 +209,54 @@ const controller = () => {
 			}
 		}
 
+		hoverHandler = function (event) {
+			let currentSquare = event.target.textContent.length;
+			if (currentSquare === 0) {
+				_hoverShowPlayerSign(event.target, player1);
+			}
+		};
+
+		leaveHandler = function (target) {
+			target.classList.remove("squareHoverX");
+			target.classList.remove("squareHoverO");
+		};
+
 		clickHandler = function (event) {
+			// Remove the hover state
+			leaveHandler(event.target);
 			let currentSquare = event.target.textContent.length;
 			// ONLY input player's sign IF square slot is empty
 			if (currentSquare === 0) {
-            announceTurn();
+				announceTurn();
 				_uploadPlayerSign.call(null, event, player1, player2);
 				// Check if we have a winner, IF YES then display result but remove further player inputs
 				if (_checkWinner() !== "") {
 					const { winner, square1, square2, square3 } = _checkWinner();
 					_displayWinner(winner, square1, square2, square3);
 					_updateScore(winner);
-               //stop all user input once winner is reach
-					squares.forEach((square) => square.removeEventListener("click", clickHandler)); 
-               setTimeout(() => _resetGame(), 2000);
+					//stop all user input once winner is reach
+					squares.forEach((square) => {
+						square.removeEventListener("click", clickHandler);
+						square.removeEventListener("mouseover", hoverHandler);
+					});
+					setTimeout(() => _resetGame(), 2000);
 				} else {
 					if (_checkFullSquare(squares)) {
 						_displayTie(squares);
-                  setTimeout(() => _resetGame(), 2000);
+						setTimeout(() => _resetGame(), 2000);
 					}
 				}
 			}
 		};
 
-		squares.forEach((square) => square.addEventListener("click", clickHandler));
+		squares.forEach((square) => {
+			square.addEventListener("click", clickHandler);
+			square.addEventListener("mouseover", hoverHandler);
+			square.addEventListener("mouseleave", (event) => leaveHandler(event.target));
+		});
 	}
 
+	// ------ PLAYER VS BOT --------
 	function _playerVSbot() {
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
@@ -239,8 +271,8 @@ const controller = () => {
 				const { winner, square1, square2, square3 } = _checkWinner();
 				_displayWinner(winner, square1, square2, square3);
 				_updateScore(winner);
-            //stop all user input once winner is reach
-            squares.forEach((square) => square.removeEventListener("click", clickHandler));
+				//stop all user input once winner is reach
+				squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				return true;
 			}
 		}
@@ -256,7 +288,22 @@ const controller = () => {
 			}
 		}
 
+		hoverHandler = function (event) {
+			let currentSquare = event.target.textContent.length;
+			if (currentSquare === 0) {
+				_hoverShowPlayerSign(event.target, player1);
+			}
+		};
+
+		leaveHandler = function (target) {
+			target.classList.remove("squareHoverX");
+			target.classList.remove("squareHoverO");
+		};
+
 		clickHandler = function (event) {
+			// Remove the hover state
+			leaveHandler(event.target);
+         
 			// Ignore the click if allowClick is false
 			if (!allowClick) {
 				return;
@@ -266,23 +313,23 @@ const controller = () => {
 			// Square slot is empty
 			if (currentSquare === 0) {
 				allowClick = false; // Pause the event listener so we wait for bot's move
-            announceTurn();
+				announceTurn();
 				_uploadPlayerSign.call(null, event, player1);
 				if (checkBoardForWinner()) {
-               setTimeout(() => _resetGame(), 2000); 
+					setTimeout(() => _resetGame(), 2000);
 				} else if (_checkFullSquare(squares)) {
 					_displayTie(squares);
-               setTimeout(() => _resetGame(), 2000);
+					setTimeout(() => _resetGame(), 2000);
 				} else {
 					setTimeout(() => {
 						botMove(squares); // Bot's makes turn
-						_displayTurn("Your"); 
+						_displayTurn("Your");
 						if (checkBoardForWinner()) {
-                     setTimeout(() => _resetGame(), 2000);
+							setTimeout(() => _resetGame(), 2000);
 						} else {
 							if (_checkFullSquare(squares)) {
 								_displayTie(squares);
-                        setTimeout(() => _resetGame(), 2000);
+								setTimeout(() => _resetGame(), 2000);
 							}
 						}
 						allowClick = true; // Resume the event listener
@@ -291,7 +338,11 @@ const controller = () => {
 			}
 		};
 
-		squares.forEach((square) => square.addEventListener("click", clickHandler));
+		squares.forEach((square) => {
+			square.addEventListener("click", clickHandler);
+			square.addEventListener("mouseover", hoverHandler);
+			square.addEventListener("mouseleave", (event) => leaveHandler(event.target));
+		});
 	}
 };
 

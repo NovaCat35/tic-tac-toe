@@ -5,9 +5,11 @@
 	--tie-color: rgb(233, 193, 19);
 	--win-color: green;
    --scoreboard-background: rgb(228, 244, 196);
+   --resetBtn-background: rgb(239, 200, 200);
+   --resetBtn-active-background: rgb(224, 146, 146);
 	--h1-font: "Fredericka the Great", cursive;
-	--display-font: "Fredericka the Great", cursive;
-	--square-font: "Special Elite", cursive;
+	--display-font: 'Special Elite', cursive;
+	--square-font: "Fredericka the Great", cursive;
 }
 * {
 	box-sizing: border-box;
@@ -49,6 +51,7 @@ main {
 	border-radius: 50%;
 	background-image: url(assets/refresh.svg);
 	background-size: 90%;
+   background-color: var(--resetBtn-background);
 	background-position: center;
 	transition: transform 0.3s ease-in-out;
 }
@@ -56,7 +59,7 @@ main {
 	transform: scale(1.3);
 }
 .reset-btn:active {
-	background-color: rgb(208, 208, 208);
+	background-color: var(--resetBtn-active-background);
 	transform: translateY(5px);
 }
 /* ************** */
@@ -140,6 +143,14 @@ main {
 	align-items: center;
 	transition: all 0.5s ease-in;
 }
+.square.squareHoverX::after {
+   content: 'X';
+   opacity: .5;
+}
+.square.squareHoverO::after {
+   content: 'O';
+   opacity: .5;
+}
 .square.active {
 	animation: addingPlayerSign 0.3s forwards;
 }
@@ -220,7 +231,7 @@ footer img:hover {
       width: calc(5rem + 50vw);
 	}
    .result-display {
-      margin: 10px 0;
+      margin: 15px 0;
    }
 }
 @media screen and (min-width: 800px) {
