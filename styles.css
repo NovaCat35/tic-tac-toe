@@ -4,12 +4,15 @@
 	--square-background: rgb(240, 239, 239);
 	--tie-color: rgb(233, 193, 19);
 	--win-color: green;
-   --scoreboard-background: rgb(228, 244, 196);
-   --resetBtn-background: rgb(239, 200, 200);
-   --resetBtn-active-background: rgb(224, 146, 146);
+	--scoreboard-background: rgb(228, 244, 196);
+	--resetBtn-background: rgb(239, 200, 200);
+	--resetBtn-active-background: rgb(224, 146, 146);
+   --game-option-background: rgb(14, 14, 14);
+   --h1-color: rgb(8, 150, 171);
 	--h1-font: "Fredericka the Great", cursive;
-	--display-font: 'Special Elite', cursive;
+	--display-font: "Special Elite", cursive;
 	--square-font: "Fredericka the Great", cursive;
+	--game-option-font: "Allerta Stencil", sans-serif;
 }
 * {
 	box-sizing: border-box;
@@ -26,6 +29,67 @@ main {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+/* ************** */
+/* GAME OPTION */
+.game-option {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: var(--game-option-background);
+	position: absolute;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	color: white;
+	z-index: 1;
+	gap: 30px;
+	transition: height 0.5s ease-in-out;
+   overflow: hidden;
+}
+.game-option.hidden {
+	height: 0;
+}
+.game-option h1 {
+   color: var(--h1-color);
+   position: absolute;
+   font-size: 1.5rem;
+   font-family: var(--h1-font);
+   top: 20px;
+}
+.game-option .option {
+	cursor: pointer;
+	font-family: var(--game-option-font);
+	font-size: 1rem;
+	border: 3px solid white;
+	padding: 10px;
+	border-radius: 5px;
+	transition: all 0.3s ease-in-out;
+}
+.game-option .option:hover {
+	border: 3px solid rgb(35, 158, 182);
+	background-color: rgb(245, 245, 245);
+   color: black;
+}
+.pvp-container img {
+	object-fit: contain;
+	height: 200px;
+	border-radius: 10px;
+}
+.pvb-container img {
+	object-fit: cover;
+	height: 200px;
+	width: 170px;
+	border-radius: 10px;
+}
+.pvp-container,
+.pvb-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
 }
 
 /* ************** */
@@ -51,7 +115,7 @@ main {
 	border-radius: 50%;
 	background-image: url(assets/refresh.svg);
 	background-size: 90%;
-   background-color: var(--resetBtn-background);
+	background-color: var(--resetBtn-background);
 	background-position: center;
 	transition: transform 0.3s ease-in-out;
 }
@@ -62,6 +126,7 @@ main {
 	background-color: var(--resetBtn-active-background);
 	transform: translateY(5px);
 }
+
 /* ************** */
 /* DISPLAY & SCOREBOARD*/
 .result-display {
@@ -99,28 +164,6 @@ main {
 }
 
 /* ************** */
-/* GAME OPTION */
-.game-option {
-	display: flex;
-	justify-content: space-evenly;
-	align-items: center;
-	background: rgba(0, 0, 0, 0.775);
-	position: absolute;
-	top: 0;
-	width: 100vw;
-	height: 100vh;
-	color: white;
-	z-index: 1;
-	gap: 30px;
-}
-.game-option.hidden {
-	display: none;
-}
-.game-option .option {
-   cursor: pointer;
-	font-size: 1.3rem;
-}
-/* ************** */
 /* GAMEBOARD */
 .game-board {
 	height: calc(6rem + 55vw);
@@ -144,12 +187,12 @@ main {
 	transition: all 0.5s ease-in;
 }
 .square.squareHoverX::after {
-   content: 'X';
-   opacity: .5;
+	content: "X";
+	opacity: 0.5;
 }
 .square.squareHoverO::after {
-   content: 'O';
-   opacity: .5;
+	content: "O";
+	opacity: 0.5;
 }
 .square.active {
 	animation: addingPlayerSign 0.3s forwards;
@@ -224,19 +267,41 @@ footer img:hover {
 	.reset-btn {
 		top: 30px;
 	}
+	.game-option {
+		flex-direction: row;
+		justify-content: space-evenly;
+		align-items: center;
+	}
+   .game-option h1 {
+      font-size: 3.5rem;
+      top: 40px;
+	}
+	.pvp-container img {
+		height: 300px;
+		border-radius: 10px;
+	}
+	.pvb-container img {
+		object-fit: cover;
+		height: 300px;
+		width: 240px;
+		border-radius: 10px;
+	}
 }
 @media screen and (min-width: 566px) {
-   .game-board {
-      height: calc(5rem + 50vw);
-      width: calc(5rem + 50vw);
+	.game-board {
+		height: calc(5rem + 50vw);
+		width: calc(5rem + 50vw);
 	}
-   .result-display {
-      margin: 15px 0;
-   }
+	.result-display {
+		margin: 15px 0;
+	}
 }
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 750px) {
 	.game-board {
 		width: 450px;
 		height: 450px;
+	}
+	.game-option .option {
+		font-size: 2rem;
 	}
 }
