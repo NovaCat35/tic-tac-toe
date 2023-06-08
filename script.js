@@ -129,10 +129,12 @@ const controller = () => {
 	function botMove(squares) {
 		// Get only the empty square slots
 		let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
-		// choose index at random
+		// Choose index at random
 		rndIndex = Math.floor(Math.random() * emptySquareList.length);
+      // Fill in the square
 		emptySquareList[rndIndex].textContent = "O";
 		emptySquareList[rndIndex].classList.add("active");
+      leaveHandler(emptySquareList[rndIndex]);
 		updateBoard(emptySquareList[rndIndex]);
 	}
 
@@ -167,12 +169,23 @@ const controller = () => {
 	}
 
 	function _updateScore(winner) {
+      const playVictory1 = new Audio('assets/victory1.mp3');
+      const playVictory2 = new Audio('assets/victory2.mp3');
 		const scoreboardX = document.querySelector(".scoreboard-x > .score");
 		const scoreboardO = document.querySelector(".scoreboard-o > .score");
+
 		if (winner === "X") {
 			scoreboardX.textContent = Number(scoreboardX.textContent) + 1;
+         scoreboardX.style.animation = 'addScore .5s';
+         // remove animation after ending
+         scoreboardX.addEventListener('animationend', function() {this.style.animation = '' });
+         playVictory1.play()
 		} else {
 			scoreboardO.textContent = Number(scoreboardO.textContent) + 1;
+         scoreboardO.style.animation = 'addScore .5s';
+         // remove animation after ending
+         scoreboardO.addEventListener('animationend', function() {this.style.animation = '' });
+         playVictory2.play()
 		}
 	}
 
@@ -303,7 +316,7 @@ const controller = () => {
 		clickHandler = function (event) {
 			// Remove the hover state
 			leaveHandler(event.target);
-         
+
 			// Ignore the click if allowClick is false
 			if (!allowClick) {
 				return;
@@ -315,14 +328,17 @@ const controller = () => {
 				allowClick = false; // Pause the event listener so we wait for bot's move
 				announceTurn();
 				_uploadPlayerSign.call(null, event, player1);
+            // Check for winner
 				if (checkBoardForWinner()) {
 					setTimeout(() => _resetGame(), 2000);
+            // Check for tie
 				} else if (_checkFullSquare(squares)) {
 					_displayTie(squares);
 					setTimeout(() => _resetGame(), 2000);
+            // Bot's Turn
 				} else {
 					setTimeout(() => {
-						botMove(squares); // Bot's makes turn
+						botMove(squares); 
 						_displayTurn("Your");
 						if (checkBoardForWinner()) {
 							setTimeout(() => _resetGame(), 2000);

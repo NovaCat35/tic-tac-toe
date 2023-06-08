@@ -13,7 +13,9 @@ Feature:
 - Responsive design
 - Bot levels
 
-## Image Source:
-ICONS: https://pictogrammers.com/library/mdi/
-Mob Pyscho 100: https://twitter.com/D_Hyang_seol/status/1031916226346278912
-Adventure Time/Zelda: https://twitter.com/VideoArtGame/status/1581646145373306881
+## Sources
+ICONS: https://pictogrammers.com/library/mdi/ <br>
+Mob Pyscho 100: https://twitter.com/D_Hyang_seol/status/1031916226346278912 <br>
+Adventure Time/Zelda: https://twitter.com/VideoArtGame/status/1581646145373306881 <br>
+Audio: https://pixabay.com/
+
