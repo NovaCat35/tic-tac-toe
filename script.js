@@ -13,37 +13,27 @@ const gameBoard = (() => {
 	};
 })();
 
-const player = (sign) => {
+const player = (sign, player = "") => {
 	let playerActive = true;
+	const playerName = player; 
 	const playerSign = sign;
 
 	return {
 		playerActive,
 		playerSign,
+		playerName
 	};
 };
 
 // Controls the logic of player clicks and outputs them into the gameBoard. Updates gameBoard with playerInput
-const controller = () => {
+const controller = (() => {
 	// --- EVENT LISTENERS --- //
-	const _gameOption = document.querySelector(".game-option");
 	const displayResult = document.querySelector(".result-display");
 	const { updateBoard, board } = gameBoard;
-	let gameType = "";
 	let clickHandler, hoverHandler, leaveHandler;
+	let p1, p2, setDifficulty, gameType;
 
-	// OPTION: PVP
-	document.querySelector(".pvp").addEventListener("click", () => {
-		gameType = "pvp";
-		_gameOption.classList.add("hidden");
-		_playerVSplayer();
-	});
-	// OPTION: BOT
-	document.querySelector(".bot").addEventListener("click", () => {
-		gameType = "bot";
-		_gameOption.classList.add("hidden");
-		_playerVSbot();
-	});
+
 	// RESET BTN
 	const _resetBtn = document.querySelector(".reset-btn");
 	_resetBtn.addEventListener("click", _resetGame);
@@ -65,9 +55,9 @@ const controller = () => {
 		});
 
 		if (gameType === "pvp") {
-			_playerVSplayer();
+			playerVSplayer(p1, p2);
 		} else {
-			_playerVSbot();
+			playerVSbot(difficulty);
 		}
 	}
 
@@ -77,7 +67,7 @@ const controller = () => {
 		const squareSlot2 = document.querySelector(`[data-row="${square2[0]}"][data-column="${square2[1]}"]`);
 		const squareSlot3 = document.querySelector(`[data-row="${square3[0]}"][data-column="${square3[1]}"]`);
 
-		displayResult.textContent = `Player ${winner} wins the round!`;
+		displayResult.textContent = `${winner} wins the round!`;
 		displayResult.classList.add("win");
 		squareSlot1.classList.add("win");
 		squareSlot2.classList.add("win");
@@ -85,6 +75,8 @@ const controller = () => {
 	}
 
 	function _displayTie(squares) {
+		const playTie = new Audio("assets/level-win.mp3");
+		playTie.play();
 		displayResult.textContent = "It's a TIE!";
 		displayResult.classList.add("tie");
 		squares.forEach((square) => square.classList.add("tie"));
@@ -131,10 +123,10 @@ const controller = () => {
 		let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
 		// Choose index at random
 		rndIndex = Math.floor(Math.random() * emptySquareList.length);
-      // Fill in the square
+		// Fill in the square
 		emptySquareList[rndIndex].textContent = "O";
 		emptySquareList[rndIndex].classList.add("active");
-      leaveHandler(emptySquareList[rndIndex]);
+		leaveHandler(emptySquareList[rndIndex]);
 		updateBoard(emptySquareList[rndIndex]);
 	}
 
@@ -169,23 +161,27 @@ const controller = () => {
 	}
 
 	function _updateScore(winner) {
-      const playVictory1 = new Audio('assets/victory1.mp3');
-      const playVictory2 = new Audio('assets/victory2.mp3');
+		const playVictory1 = new Audio("assets/victory1.mp3");
+		const playVictory2 = new Audio("assets/victory2.mp3");
 		const scoreboardX = document.querySelector(".scoreboard-x > .score");
 		const scoreboardO = document.querySelector(".scoreboard-o > .score");
 
 		if (winner === "X") {
 			scoreboardX.textContent = Number(scoreboardX.textContent) + 1;
-         scoreboardX.style.animation = 'addScore .5s';
-         // remove animation after ending
-         scoreboardX.addEventListener('animationend', function() {this.style.animation = '' });
-         playVictory1.play()
+			scoreboardX.style.animation = "addScore .5s";
+			// remove animation after ending
+			scoreboardX.addEventListener("animationend", function () {
+				this.style.animation = "";
+			});
+			playVictory1.play();
 		} else {
 			scoreboardO.textContent = Number(scoreboardO.textContent) + 1;
-         scoreboardO.style.animation = 'addScore .5s';
-         // remove animation after ending
-         scoreboardO.addEventListener('animationend', function() {this.style.animation = '' });
-         playVictory2.play()
+			scoreboardO.style.animation = "addScore .5s";
+			// remove animation after ending
+			scoreboardO.addEventListener("animationend", function () {
+				this.style.animation = "";
+			});
+			playVictory2.play();
 		}
 	}
 
@@ -193,8 +189,8 @@ const controller = () => {
 		const setName1 = document.querySelector(".scoreboard-x > .name");
 		const setName2 = document.querySelector(".scoreboard-o > .name");
 		if (p2 !== "bot") {
-			setName1.textContent = `PLAYER ${p1}`;
-			setName2.textContent = `PLAYER ${p2}`;
+			setName1.textContent = `${p1}`;
+			setName2.textContent = `${p2}`;
 		} else {
 			setName1.textContent = `PLAYER`;
 			setName2.textContent = `BOT`;
@@ -202,22 +198,23 @@ const controller = () => {
 	}
 
 	// ------ PLAYER VS PLAYER --------
-	function _playerVSplayer() {
-		const player1 = player("X");
-		const player2 = player("O");
+	function playerVSplayer(p1Name, p2Name) {
+		gameType = "pvp", p1 = p1Name, p2 = p2Name;
+		const player1 = player("X", p1Name);
+		const player2 = player("O", p2Name);
 		const squares = document.querySelectorAll(".square");
 		let p1Turn = true;
 
-		_setName(player1.playerSign, player2.playerSign);
-		_displayTurn(player1.playerSign);
+		_setName(player1.playerName, player2.playerName);
+		_displayTurn(player1.playerName);
 
 		function announceTurn() {
 			// Display current player's turn
 			if (p1Turn) {
-				_displayTurn(player2.playerSign);
+				_displayTurn(player2.playerName);
 				p1Turn = false;
 			} else {
-				_displayTurn(player1.playerSign);
+				_displayTurn(player1.playerName);
 				p1Turn = true;
 			}
 		}
@@ -270,7 +267,8 @@ const controller = () => {
 	}
 
 	// ------ PLAYER VS BOT --------
-	function _playerVSbot() {
+	function playerVSbot(difficulty) {
+		gameType = "pvb", setDifficulty = difficulty;
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
 		let p1Turn = true;
@@ -328,17 +326,17 @@ const controller = () => {
 				allowClick = false; // Pause the event listener so we wait for bot's move
 				announceTurn();
 				_uploadPlayerSign.call(null, event, player1);
-            // Check for winner
+				// Check for winner
 				if (checkBoardForWinner()) {
 					setTimeout(() => _resetGame(), 2000);
-            // Check for tie
+					// Check for tie
 				} else if (_checkFullSquare(squares)) {
 					_displayTie(squares);
 					setTimeout(() => _resetGame(), 2000);
-            // Bot's Turn
+					// Bot's Turn
 				} else {
 					setTimeout(() => {
-						botMove(squares); 
+						botMove(squares);
 						_displayTurn("Your");
 						if (checkBoardForWinner()) {
 							setTimeout(() => _resetGame(), 2000);
@@ -360,6 +358,66 @@ const controller = () => {
 			square.addEventListener("mouseleave", (event) => leaveHandler(event.target));
 		});
 	}
-};
+	return {
+		playerVSplayer,
+		playerVSbot,
+	};
+})();
 
-controller();
+const gameIntro = (() => {
+	const _gameOption = document.querySelector(".game-option");
+	const _leftContainer = document.querySelector(".pvp-container");
+	const _rightContainer = document.querySelector(".pvb-container");
+	const background = document.querySelector(".backgroundColor");
+	const _option1 = document.querySelector(".pvp-container > .option");
+	const _option2 = document.querySelector(".pvb-container > .option");
+	const _inputsContainer1 = document.querySelector(".pvp-container > .inputs-container");
+	const _inputsContainer2 = document.querySelector(".pvb-container > .inputs-container");
+	const _submit1 = document.querySelector(".pvp-container > .inputs-container > form > button[type='submit']");
+	const _submit2 = document.querySelector(".pvb-container > .inputs-container > form > button[type='submit']");
+
+	const { playerVSplayer, playerVSbot } = controller;
+
+	function _pvpModuleInput() {
+		_rightContainer.classList.add("hideContainer");
+		_option1.classList.add("hideBtns");
+		background.style.cssText = "background:linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(18, 60, 107, 0.665))";
+
+		// wait until button hides and then show form
+		setTimeout(() => _inputsContainer1.classList.add("active"), 1000);
+		_submit1.addEventListener("click", (event) => {
+			const player1 = document.querySelector('#player_name1').value;
+			const player2 = document.querySelector('#player_name2').value
+			event.preventDefault();
+			_gameOption.classList.add("hidden");
+			playerVSplayer(player1, player2);
+		});
+	}
+
+	function _pvbModuleInput() {
+		_leftContainer.classList.add("hideContainer");
+		_option2.classList.add("hideBtns");
+		background.style.cssText = "background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(20, 154, 161, 0.627))";
+
+		// wait until button hides and then show form
+		setTimeout(() => _inputsContainer2.classList.add("active"), 1000);
+		_submit2.addEventListener("click", (event) => {
+			event.preventDefault();
+			_gameOption.classList.add("hidden");
+			playerVSbot();
+		});
+	}
+
+	// OPTION: PVP
+	document.querySelector(".pvp").addEventListener("click", () => {
+		gameType = "pvp";
+		_pvpModuleInput();
+
+	});
+
+	// OPTION: BOT
+	document.querySelector(".bot").addEventListener("click", () => {
+		gameType = "bot";
+		_pvbModuleInput();
+	});
+})();

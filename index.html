@@ -14,13 +14,36 @@
 		<div class="game-option">
          <h1>TIC-TAC-TOE</h1>
 			<div class="pvp-container">
-            <img src="assets/pvp.jpeg" alt="pvp img" />
+            <img id="pvp" src="assets/pvp.jpeg" alt="pvp img" />
             <div class="option pvp">Player VS Player</div>
+				<div class="inputs-container">
+					<h2>Enter Player Names</h2>
+					<form action="">
+						<div>
+							<input type="text" placeholder="Player X" id="player_name1" value="Player X" required>
+						</div>
+						<div>
+							<input type="text" placeholder="Player O" id="player_name2" value="Player O" required>
+						</div>
+						<button type="submit">START GAME</button>
+					</form>
+				</div>
          </div>
          <div class="pvb-container">
-            <img src="assets/Time to breath in that wild adventure! _ Adventure Time.jpeg" alt="pvb img" />
+            <img id="pvb" src="assets/Time to breath in that wild adventure! _ Adventure Time.jpeg" alt="pvb img" />
             <div class="option bot">Player VS Bot</div>
-         </div>
+				<div class="inputs-container">
+					<h2>Select Difficulty</h2>
+					<form action="">
+						<select id="difficulty">
+							<option value="easy">Easy</option>
+							<option value="hard">Hard</option>
+							<option value="imposible">Impoooosssible!!!</option>
+						</select>
+						<button type="submit">START GAME</button>
+					</form>
+				</div>         </div>
+			<div class="backgroundColor"></div>
          <ul class="floats">
             <li>X</li>
             <li>O</li>

@@ -9,7 +9,7 @@
 	--resetBtn-active-background: rgb(224, 146, 146);
 	--game-option-background: rgb(14, 14, 14);
 	--h1-color: rgb(8, 150, 171);
-   --h1-color-glow: rgba(52, 118, 233, 0.293);
+	--h1-color-glow: rgba(52, 118, 233, 0.293);
 	--h1-font: "Fredericka the Great", cursive;
 	--display-font: "Special Elite", cursive;
 	--square-font: "Fredericka the Great", cursive;
@@ -35,78 +35,78 @@ main {
 /* ************** */
 /* INTRO: FLOATING SIGNS */
 .floats {
-   position: absolute;
-   top: 0;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   z-index: -1;
-   opacity: 0.7;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -1;
+	opacity: 0.7;
 }
 .floats li {
-   user-select: none;
-   position: absolute;
-   list-style: none;
-   animation: float 15s linear infinite;
-   bottom: -130px;
-   font-size: 5rem;
-   font-family: var(--h1-font);
+	user-select: none;
+	position: absolute;
+	list-style: none;
+	animation: float 15s linear infinite;
+	bottom: -130px;
+	font-size: 5rem;
+	font-family: var(--h1-font);
 }
 .floats li:first-child {
-   left: 10vw;
+	left: 10vw;
 }
 .floats li:nth-child(2) {
-   left: 50vw;
-   animation-delay: 5s;
-   color:var(--tie-color);
+	left: 50vw;
+	animation-delay: 5s;
+	color: var(--tie-color);
 }
 .floats li:nth-child(3) {
-   left: 30vw;
-   bottom: -170px;
-   animation-delay: 10s;
-   font-size: 10rem;
+	left: 30vw;
+	bottom: -170px;
+	animation-delay: 10s;
+	font-size: 10rem;
 }
 .floats li:nth-child(4) {
-   left: 60vw;
-   animation-delay: 15s;
-   color:var(--win-color);
+	left: 60vw;
+	animation-delay: 15s;
+	color: var(--win-color);
 }
 .floats li:nth-child(5) {
-   left: 20vw;
-   animation-delay: 17s;
-   font-size: 3rem;
-   color:var(--tie-color);
+	left: 20vw;
+	animation-delay: 17s;
+	font-size: 3rem;
+	color: var(--tie-color);
 }
 .floats li:nth-child(6) {
-   left: 80vw;
-   animation-delay: 6s;
+	left: 80vw;
+	animation-delay: 6s;
 }
 .floats li:nth-child(7) {
-   left: 85vw;
-   animation-delay: 12s;
-   font-size: 3.5rem;
+	left: 85vw;
+	animation-delay: 12s;
+	font-size: 3.5rem;
 }
 .floats li:nth-child(8) {
-   left: 5vw;
-   animation-delay: 8s;
-   font-size: 2.5rem;
-   color:var(--win-color);
+	left: 5vw;
+	animation-delay: 8s;
+	font-size: 2.5rem;
+	color: var(--win-color);
 }
 .floats li:nth-child(9) {
-   left: 35vw;
-   font-size: 4rem;
-   animation-delay: 3s;
+	left: 35vw;
+	font-size: 4rem;
+	animation-delay: 3s;
 }
 .floats li:nth-child(10) {
-   left: 90vw;
-   animation-delay: 2s;
-   font-size: 8rem;
+	left: 90vw;
+	animation-delay: 2s;
+	font-size: 8rem;
 }
 .floats li:nth-child(11) {
-   left: 75vw;
-   animation-delay: 7s;
-   font-size: 5rem;
-   color:var(--win-color);
+	left: 75vw;
+	animation-delay: 7s;
+	font-size: 5rem;
+	color: var(--win-color);
 }
 
 /* ************** */
@@ -123,7 +123,7 @@ main {
 	height: 100vh;
 	color: white;
 	z-index: 1;
-	gap: 30px;
+	gap: 25px;
 	transition: height 0.5s ease-in-out;
 	overflow: hidden;
 }
@@ -133,11 +133,11 @@ main {
 .game-option h1 {
 	color: var(--h1-color);
 	position: absolute;
-	font-size: 1.5rem;
+	font-size: clamp(1.5rem, 1vw, 2.2rem);
 	font-family: var(--h1-font);
 	top: 20px;
 	animation: flicker 2s linear;
-   animation-iteration-count: 2;
+	animation-iteration-count: 2;
 	text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px var(--h1-color-glow), 0 0 30px var(--h1-color-glow), 0 0 40px var(--h1-color-glow), 0 0 50px var(--h1-color-glow);
 }
 .game-option .option {
@@ -150,7 +150,7 @@ main {
 	transition: all 0.3s ease-in-out;
 }
 .game-option .option:hover {
-	border: 3px solid rgb(35, 158, 182);
+	border: 3px solid rgb(16, 173, 204);
 	background-color: rgb(245, 245, 245);
 	color: black;
 }
@@ -171,23 +171,90 @@ main {
 .game-option .pvb-container .option:hover::before {
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(20, 154, 161, 0.627));
 }
-.pvp-container img {
-	object-fit: contain;
-	height: 200px;
-	border-radius: 10px;
+.backgroundColor {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -2;
 }
-.pvb-container img {
+.option.hideBtns {
+	animation: removeBtns 0.9s ease-in-out forwards;
+}
+.pvp-container,
+.pvb-container {
+	transition: all 0.9s ease-in-out;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+}
+.hideContainer {
+	display: none;
+}
+.game-option img {
 	object-fit: cover;
 	height: 200px;
 	width: 160px;
 	border-radius: 10px;
 }
-.pvp-container,
-.pvb-container {
+.inputs-container {
+	visibility: hidden;
+	height: 0;
+	transform: scale(0);
+	transition: all 0.5s ease-in-out;
+	margin-bottom: -15px;
+}
+.inputs-container form {
+	margin-top: 10px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	gap: 15px;
+}
+.inputs-container.active {
+	margin-top: -35px;
+	visibility: visible;
+	height: 100%;
+	transform: scale(1);
+}
+.inputs-container h2 {
+	font-size: clamp(1.2rem, 2vw, 3rem);
+	font-family: var(--display-font);
+	color: rgb(236, 236, 236);
+}
+.inputs-container input {
+	padding: 10px;
+	border: 2px solid rgb(36, 136, 212);
+	border-radius: 5px;
+}
+.inputs-container input:focus {
+	outline: none;
+}
+.inputs-container select {
+	padding: 5px;
+	border-radius: 5px;
+}
+.inputs-container select:focus {
+	outline: none;
+}
+.inputs-container button {
+	cursor: pointer;
+	color: rgb(243, 243, 243);
+	border: 2px solid white;
+	background-color: rgb(53, 147, 206);
+	padding: 10px;
+	width: 150px;
+	border-radius: 10px;
+	font-family: var(--display-font);
+	font-size: 1.2rem;
+	transition: all 0.3s ease-in-out;
+}
+.inputs-container button:hover {
+	color: rgb(243, 243, 243);
+	border: 2px solid rgb(76, 106, 148);
+	background-color: rgb(17, 80, 119);
 }
 
 /* ************** */
@@ -331,6 +398,8 @@ footer img:hover {
 	transform: rotate(360deg);
 }
 
+/* ******************************************* */
+/* KEY FRAMES */
 @keyframes addingPlayerSign {
 	0% {
 		font-size: 0;
@@ -407,29 +476,44 @@ footer img:hover {
 }
 
 @keyframes float {
- from {
-   transform: translateY(0) rotate(0deg);
-   opacity: 1;
- }
- to {
-   transform: translateY(-1000px) rotate(360deg);
-   opacity: 0;
- }
+	from {
+		transform: translateY(0) rotate(0deg);
+		opacity: 1;
+	}
+	to {
+		transform: translateY(-1000px) rotate(360deg);
+		opacity: 0;
+	}
 }
 
 @keyframes addScore {
-   0% {
-     transform: scale(1);
-   }
-   75% {
-     transform: scale(1.5);
-   }
+	0% {
+		transform: scale(1);
+	}
+	75% {
+		transform: scale(1.5);
+	}
 
-   100% {
-     transform: scale(1.1);
-   }
+	100% {
+		transform: scale(1.1);
+	}
 }
 
+@keyframes removeBtns {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(2);
+	}
+	100% {
+		transform: scale(0);
+		display: none;
+	}
+}
+
+/* ******************************************* */
+/* MEDIA QUERIES */
 @media screen and (min-width: 510px) {
 	.reset-btn {
 		top: 30px;
@@ -444,14 +528,24 @@ footer img:hover {
 		top: 40px;
 	}
 	.pvp-container img {
+		object-fit: cover;
 		height: 300px;
+		width: 240px;
 		border-radius: 10px;
+		margin-top: 30px;
 	}
 	.pvb-container img {
 		object-fit: cover;
 		height: 300px;
 		width: 240px;
 		border-radius: 10px;
+		margin-top: 30px;
+	}
+	.hideContainer {
+		display: none;
+	}
+	.inputs-container.active {
+		margin-top: -65px;
 	}
 }
 @media screen and (min-width: 566px) {
