@@ -7,31 +7,31 @@
 		<link rel="stylesheet" href="styles.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Beth+Ellen&family=Bona+Nova&family=Cabin+Sketch:wght@400;700&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script:wght@400;700&family=Ewert&family=Fasthand&family=Fredericka+the+Great&family=Libre+Baskerville&family=Lily+Script+One&family=Lora&family=Merriweather:wght@400;900&family=Monoton&family=Playfair+Display:wght@400;500&family=Quicksand&family=Raleway&family=Righteous&family=Rubik+Pixels&family=Special+Elite&family=Work+Sans:wght@300;400&display=swap" rel="stylesheet" />
-		<title>Document</title>
+		<link href="https://fonts.googleapis.com/css2?family=Allerta+Stencil&family=Bagel+Fat+One&family=Beth+Ellen&family=Bona+Nova&family=Cabin+Sketch:wght@400;700&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script:wght@400;700&family=Ewert&family=Fasthand&family=Fredericka+the+Great&family=Libre+Baskerville&family=Lily+Script+One&family=Lora&family=Merriweather:wght@400;900&family=Monoton&family=Playfair+Display:wght@400;500&family=Quicksand&family=Raleway&family=Righteous&family=Rubik+Pixels&family=Special+Elite&family=Work+Sans:wght@300;400&display=swap" rel="stylesheet" />
+		<title>Tic-Tac-Toe</title>
 	</head>
 	<body>
 		<div class="game-option">
-         <h1>TIC-TAC-TOE</h1>
+			<h1>TIC-TAC-TOE</h1>
 			<div class="pvp-container">
-            <img id="pvp" src="assets/pvp.jpeg" alt="pvp img" />
-            <div class="option pvp">Player VS Player</div>
+				<img id="pvp" src="assets/pvp.jpeg" alt="pvp img" />
+				<div class="option pvp">Player VS Player</div>
 				<div class="inputs-container">
 					<h2>Enter Player Names</h2>
 					<form action="">
 						<div>
-							<input type="text" placeholder="Player X" id="player_name1" value="Player X" required>
+							<input type="text" placeholder="Player X" id="player_name1" value="Player X" maxlength="13" required />
 						</div>
 						<div>
-							<input type="text" placeholder="Player O" id="player_name2" value="Player O" required>
+							<input type="text" placeholder="Player O" id="player_name2" value="Player O" maxlength="13" required />
 						</div>
 						<button type="submit">START GAME</button>
 					</form>
 				</div>
-         </div>
-         <div class="pvb-container">
-            <img id="pvb" src="assets/Time to breath in that wild adventure! _ Adventure Time.jpeg" alt="pvb img" />
-            <div class="option bot">Player VS Bot</div>
+			</div>
+			<div class="pvb-container">
+				<img id="pvb" src="assets/Time to breath in that wild adventure! _ Adventure Time.jpeg" alt="pvb img" />
+				<div class="option bot">Player VS Bot</div>
 				<div class="inputs-container">
 					<h2>Select Difficulty</h2>
 					<form action="">
@@ -42,21 +42,22 @@
 						</select>
 						<button type="submit">START GAME</button>
 					</form>
-				</div>         </div>
+				</div>
+			</div>
 			<div class="backgroundColor"></div>
-         <ul class="floats">
-            <li>X</li>
-            <li>O</li>
-            <li>X</li>
-            <li>O</li>
-            <li>X</li>
-            <li>0</li>
-            <li>X</li>
-            <li>O</li>
-            <li>X</li>
-            <li>O</li>
-            <li>X</li>
-        </ul>
+			<ul class="floats">
+				<li>X</li>
+				<li>O</li>
+				<li>X</li>
+				<li>O</li>
+				<li>X</li>
+				<li>0</li>
+				<li>X</li>
+				<li>O</li>
+				<li>X</li>
+				<li>O</li>
+				<li>X</li>
+			</ul>
 		</div>
 		<div class="header">
 			<h1>TIC-TAC-TOE</h1>

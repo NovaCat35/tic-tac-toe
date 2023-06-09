@@ -15,13 +15,13 @@ const gameBoard = (() => {
 
 const player = (sign, player = "") => {
 	let playerActive = true;
-	const playerName = player; 
+	const playerName = player;
 	const playerSign = sign;
 
 	return {
 		playerActive,
 		playerSign,
-		playerName
+		playerName,
 	};
 };
 
@@ -31,8 +31,7 @@ const controller = (() => {
 	const displayResult = document.querySelector(".result-display");
 	const { updateBoard, board } = gameBoard;
 	let clickHandler, hoverHandler, leaveHandler;
-	let p1, p2, setDifficulty, gameType;
-
+	let p1, p2, difficulty, gameType;
 
 	// RESET BTN
 	const _resetBtn = document.querySelector(".reset-btn");
@@ -118,16 +117,18 @@ const controller = (() => {
 		updateBoard(event.target);
 	}
 
-	function botMove(squares) {
-		// Get only the empty square slots
-		let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
-		// Choose index at random
-		rndIndex = Math.floor(Math.random() * emptySquareList.length);
-		// Fill in the square
-		emptySquareList[rndIndex].textContent = "O";
-		emptySquareList[rndIndex].classList.add("active");
-		leaveHandler(emptySquareList[rndIndex]);
-		updateBoard(emptySquareList[rndIndex]);
+	function _botMove(squares) {
+		if (difficulty === "easy") {
+			// Get only the empty square slots
+			let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
+			// Choose index at random
+			rndIndex = Math.floor(Math.random() * emptySquareList.length);
+			// Fill in the square
+			emptySquareList[rndIndex].textContent = "O";
+			emptySquareList[rndIndex].classList.add("active");
+			leaveHandler(emptySquareList[rndIndex]);
+			updateBoard(emptySquareList[rndIndex]);
+		}
 	}
 
 	function _uploadPlayerSign(event, player1, player2 = false) {
@@ -199,7 +200,7 @@ const controller = (() => {
 
 	// ------ PLAYER VS PLAYER --------
 	function playerVSplayer(p1Name, p2Name) {
-		gameType = "pvp", p1 = p1Name, p2 = p2Name;
+		(gameType = "pvp"), (p1 = p1Name), (p2 = p2Name);
 		const player1 = player("X", p1Name);
 		const player2 = player("O", p2Name);
 		const squares = document.querySelectorAll(".square");
@@ -267,8 +268,8 @@ const controller = (() => {
 	}
 
 	// ------ PLAYER VS BOT --------
-	function playerVSbot(difficulty) {
-		gameType = "pvb", setDifficulty = difficulty;
+	function playerVSbot(setDifficulty) {
+		(gameType = "pvb"), (difficulty = setDifficulty);
 		const player1 = player("X");
 		const squares = document.querySelectorAll(".square");
 		let p1Turn = true;
@@ -336,7 +337,7 @@ const controller = (() => {
 					// Bot's Turn
 				} else {
 					setTimeout(() => {
-						botMove(squares);
+						_botMove(squares);
 						_displayTurn("Your");
 						if (checkBoardForWinner()) {
 							setTimeout(() => _resetGame(), 2000);
@@ -373,6 +374,8 @@ const gameIntro = (() => {
 	const _option2 = document.querySelector(".pvb-container > .option");
 	const _inputsContainer1 = document.querySelector(".pvp-container > .inputs-container");
 	const _inputsContainer2 = document.querySelector(".pvb-container > .inputs-container");
+	const form1 = document.querySelector(".pvp-container > .inputs-container > form");
+	const form2 = document.querySelector(".pvb-container > .inputs-container > form");
 	const _submit1 = document.querySelector(".pvp-container > .inputs-container > form > button[type='submit']");
 	const _submit2 = document.querySelector(".pvb-container > .inputs-container > form > button[type='submit']");
 
@@ -386,11 +389,14 @@ const gameIntro = (() => {
 		// wait until button hides and then show form
 		setTimeout(() => _inputsContainer1.classList.add("active"), 1000);
 		_submit1.addEventListener("click", (event) => {
-			const player1 = document.querySelector('#player_name1').value;
-			const player2 = document.querySelector('#player_name2').value
-			event.preventDefault();
-			_gameOption.classList.add("hidden");
-			playerVSplayer(player1, player2);
+			if (form1.checkValidity()) {
+				event.preventDefault(); // stop the form from submitting & refreshing page
+				const player1 = document.querySelector("#player_name1").value;
+				const player2 = document.querySelector("#player_name2").value;
+				event.preventDefault();
+				_gameOption.classList.add("hidden");
+				playerVSplayer(player1, player2);
+			}
 		});
 	}
 
@@ -402,9 +408,12 @@ const gameIntro = (() => {
 		// wait until button hides and then show form
 		setTimeout(() => _inputsContainer2.classList.add("active"), 1000);
 		_submit2.addEventListener("click", (event) => {
-			event.preventDefault();
-			_gameOption.classList.add("hidden");
-			playerVSbot();
+			if (form2.checkValidity()) {
+				event.preventDefault(); // stop the form from submitting & refreshing page
+				const setDifficulty = document.querySelector("#difficulty").value;
+				_gameOption.classList.add("hidden");
+				console.log(setDifficulty)
+			}
 		});
 	}
 
@@ -412,7 +421,6 @@ const gameIntro = (() => {
 	document.querySelector(".pvp").addEventListener("click", () => {
 		gameType = "pvp";
 		_pvpModuleInput();
-
 	});
 
 	// OPTION: BOT

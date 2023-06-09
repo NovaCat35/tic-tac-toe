@@ -14,6 +14,7 @@
 	--display-font: "Special Elite", cursive;
 	--square-font: "Fredericka the Great", cursive;
 	--game-option-font: "Allerta Stencil", sans-serif;
+	--score-board-font: 'Righteous', cursive;
 }
 * {
 	box-sizing: border-box;
@@ -295,6 +296,7 @@ main {
 /* ************** */
 /* DISPLAY & SCOREBOARD*/
 .result-display {
+	text-align: center;
 	font-family: var(--display-font);
 	margin: 20px 0;
 	font-size: 2rem;
@@ -319,10 +321,11 @@ main {
 }
 .scoreboard-x,
 .scoreboard-o {
+	font-family: var(--score-board-font);
 	border-radius: 10px;
 	background-color: var(--scoreboard-background);
 	padding: 10px;
-	width: 150px;
+	min-width: 150px;
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
