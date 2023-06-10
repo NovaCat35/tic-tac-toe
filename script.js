@@ -413,6 +413,7 @@ const gameIntro = (() => {
 				const setDifficulty = document.querySelector("#difficulty").value;
 				_gameOption.classList.add("hidden");
 				console.log(setDifficulty)
+				playerVSbot(setDifficulty);
 			}
 		});
 	}
