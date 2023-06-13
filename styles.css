@@ -133,10 +133,9 @@ main {
 }
 .game-option h1 {
 	color: var(--h1-color);
-	position: absolute;
-	font-size: clamp(1.5rem, 1vw, 2.2rem);
+	font-size: calc(2.2rem + 1vw);
+	/* font-size: clamp(1.5rem, 1vw, 2.2rem); */
 	font-family: var(--h1-font);
-	top: 20px;
 	animation: flicker 2s linear;
 	animation-iteration-count: 2;
 	text-shadow: 0 0 5px transparent, 0 0 10px transparent, 0 0 20px var(--h1-color-glow), 0 0 30px var(--h1-color-glow), 0 0 40px var(--h1-color-glow), 0 0 50px var(--h1-color-glow);
@@ -268,7 +267,7 @@ main {
 	align-items: center;
 }
 .header h1 {
-	font-size: 3rem;
+	font-size: calc(3rem + 1vw);
 	font-family: var(--h1-font);
 }
 .reset-btn {
@@ -527,7 +526,8 @@ footer img:hover {
 		align-items: center;
 	}
 	.game-option h1 {
-		font-size: 3.5rem;
+		/* font-size: 3.5rem; */
+		position: absolute;
 		top: 40px;
 	}
 	.pvp-container img {
