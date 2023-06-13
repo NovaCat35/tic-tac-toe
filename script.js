@@ -32,12 +32,16 @@ const controller = (() => {
 	const { updateBoard, board } = gameBoard;
 	let clickHandler, hoverHandler, leaveHandler;
 	let p1, p2, difficulty, gameType;
+	let botFirstMove = true;
+	let botMoveTimer;
 
 	// RESET BTN
 	const _resetBtn = document.querySelector(".reset-btn");
 	_resetBtn.addEventListener("click", _resetGame);
 
 	function _resetGame() {
+		botFirstMove = true;
+		clearTimeout(botMoveTimer);
 		displayResult.classList.remove("win");
 		displayResult.classList.remove("tie");
 
@@ -61,12 +65,12 @@ const controller = (() => {
 	}
 
 	// The winners are the 3 winning squares
-	function _displayWinner(winner, square1, square2, square3) {
-		const squareSlot1 = document.querySelector(`[data-row="${square1[0]}"][data-column="${square1[1]}"]`);
-		const squareSlot2 = document.querySelector(`[data-row="${square2[0]}"][data-column="${square2[1]}"]`);
-		const squareSlot3 = document.querySelector(`[data-row="${square3[0]}"][data-column="${square3[1]}"]`);
+	function _displayWinner(evaluationInfo) {
+		const squareSlot1 = document.querySelector(`[data-row="${evaluationInfo.square1[0]}"][data-column="${evaluationInfo.square1[1]}"]`);
+		const squareSlot2 = document.querySelector(`[data-row="${evaluationInfo.square2[0]}"][data-column="${evaluationInfo.square2[1]}"]`);
+		const squareSlot3 = document.querySelector(`[data-row="${evaluationInfo.square3[0]}"][data-column="${evaluationInfo.square3[1]}"]`);
 
-		displayResult.textContent = `${winner} wins the round!`;
+		displayResult.textContent = `${evaluationInfo.winner} wins the round!`;
 		displayResult.classList.add("win");
 		squareSlot1.classList.add("win");
 		squareSlot2.classList.add("win");
@@ -89,38 +93,179 @@ const controller = (() => {
 		}
 	}
 
-	function _checkWinner() {
+	// ****************** THIS SECTION USED TO FIND OPTIMAL MOVE USING MINMAX ALGO ***************************************
+	// Check if there's any more moves left
+	function _isFullSquare() {
+		// const emptySquaresAvailable = Array.from(squares).filter((square) => square.textContent.length === 0).length;
+		// // Board is filled (all squares filled)
+		// if (emptySquaresAvailable === 0) {
+		// 	return true;
+		// }
+		// return false;
+
+		// for(let i = 0; i < 3; i++) {
+		// 	for(let j = 0; j < 3; j++) {
+		// 		if(board[i][j] === '') {
+		// 			return false;
+		// 		}
+		// 	}
+		// }
+		// return true;
+		return board.every((row) => row.every((square) => square !== ""));
+	}
+
+	// This is also the EVALUATION for minmax
+	function _checkWinner(player = "X", opponent = "O") {
+		let evaluationInfo = {};
+
 		// Check rows
 		for (let i = 0; i < 3; i++) {
-			if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][1] === board[i][2]) return { winner: board[i][0], square1: [i, 0], square2: [i, 1], square3: [i, 2] };
+			if (board[i][0] !== "" && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
+				evaluationInfo = { winner: board[i][0], square1: [i, 0], square2: [i, 1], square3: [i, 2] };
+				// maximizing player
+				if (board[i][0] === player) {
+					evaluationInfo["score"] = 10;
+				}
+				// minimizing player
+				else if (board[i][0] === opponent) {
+					evaluationInfo["score"] = -10;
+				}
+				return evaluationInfo;
+			}
 		}
 		// Check columns
 		for (let j = 0; j < 3; j++) {
-			if (board[0][j] !== "" && board[0][j] === board[1][j] && board[1][j] == board[2][j]) return { winner: board[0][j], square1: [0, j], square2: [1, j], square3: [2, j] };
+			if (board[0][j] !== "" && board[0][j] === board[1][j] && board[1][j] == board[2][j]) {
+				evaluationInfo = { winner: board[0][j], square1: [0, j], square2: [1, j], square3: [2, j] };
+				if (board[0][j] === player) {
+					evaluationInfo["score"] = 10;
+				}
+				// minimizing player
+				else if (board[0][j] === opponent) {
+					evaluationInfo["score"] = -10;
+				}
+				return evaluationInfo;
+			}
 		}
 		// Check diagonals
-		if (board[0][0] !== "" && board[0][0] === board[1][1] && board[1][1] === board[2][2]) return { winner: board[0][0], square1: [0, 0], square2: [1, 1], square3: [2, 2] };
-		if (board[0][2] !== "" && board[0][2] === board[1][1] && board[1][1] === board[2][0]) return { winner: board[2][0], square1: [0, 2], square2: [1, 1], square3: [2, 0] };
-
-		return ""; //return '' if no winners
+		if (board[0][0] !== "" && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+			evaluationInfo = { winner: board[0][0], square1: [0, 0], square2: [1, 1], square3: [2, 2] };
+			if (board[0][0] === player) {
+				evaluationInfo["score"] = 10;
+			}
+			// minimizing player
+			else if (board[0][0] === opponent) {
+				evaluationInfo["score"] = -10;
+			}
+			return evaluationInfo;
+		}
+		if (board[0][2] !== "" && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+			evaluationInfo = { winner: board[2][0], square1: [0, 2], square2: [1, 1], square3: [2, 0] };
+			if (board[0][2] === player) {
+				evaluationInfo["score"] = 10;
+			}
+			// minimizing player
+			else if (board[0][2] === opponent) {
+				evaluationInfo["score"] = -10;
+			}
+			return evaluationInfo;
+		}
+		return 0; //return 0 if no winners
 	}
 
-	function _setPlayerInputX(event) {
-		event.target.textContent = "X";
-		event.target.classList.add("active");
-		updateBoard(event.target);
+	function _minMax(board, currDepth, maxTurn) {
+		let player = "O";
+		let opponent = "X";
+		let targetDepth;
+		let evaluationInfo = _checkWinner(player, opponent);
+		let { score } = evaluationInfo;
+
+		// Base case 1:  terminate if we reached final depth
+		if (difficulty === "normal") {
+			if (score === 10) {
+				return 10;
+			} else if (score === -10) {
+				return -10;
+			}
+		} else {
+			// Smarter AI
+			if (score === 10) {
+				return 10 - currDepth;
+			} else if (score === -10) {
+				return -10 + currDepth;
+			}
+		}
+		
+		// Base case 2: terminate if  no more moves left (no winner, instead a TIE)
+		if (_isFullSquare()) {
+			return 0;
+		}
+		
+		// Maximizing player, find the maximum attainable value
+		if (maxTurn) {
+			let bestVal = -1000;
+			// Traverse all square
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					// Check square is empty
+					if (board[i][j] === "") {
+						// Make the move
+						board[i][j] = player;
+						bestVal = Math.max(bestVal, _minMax(board, currDepth + 1, false));
+						// Undo the move so we don't have it on official gameBoard
+						board[i][j] = "";
+					}
+				}
+			}
+			return bestVal;
+		}
+		// Current move is Minimizer, find the minimum attainable value
+		else {
+			let bestVal = 1000;
+			// Traverse all square
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					// Check square is empty
+					if (board[i][j] === "") {
+						// Make the move
+						board[i][j] = opponent;
+						bestVal = Math.min(bestVal, _minMax(board, currDepth + 1, true));
+						// Undo the move so we don't have it on official gameBoard
+						board[i][j] = "";
+					}
+				}
+			}
+			return bestVal;
+		}
 	}
 
-	function _setPlayerInputY(event) {
-		event.target.textContent = "O";
-		event.target.classList.add("active");
-		updateBoard(event.target);
+	function _findBestMove() {
+		let bestVal = -Infinity;
+		let bestMove = { row: null, col: null };
+
+		// Traverse all square
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				if (board[i][j] === "") {
+					board[i][j] = "O";
+					let moveVal = _minMax(board, 0, false);
+					// Undo the move
+					board[i][j] = "";
+					if (moveVal > bestVal) {
+						bestMove.row = i;
+						bestMove.col = j;
+						bestVal = moveVal;
+					}
+				}
+			}
+		}
+		return bestMove;
 	}
 
 	function _botMove(squares) {
-		if (difficulty === "easy") {
+		if (difficulty === "easy" || botFirstMove) {
 			// Get only the empty square slots
-			let emptySquareList = Array.from(squares).filter((square) => square.textContent.length === 0);
+			let emptySquareList = Array.from(squares).filter((square) => square.textContent === "");
 			// Choose index at random
 			rndIndex = Math.floor(Math.random() * emptySquareList.length);
 			// Fill in the square
@@ -128,8 +273,16 @@ const controller = (() => {
 			emptySquareList[rndIndex].classList.add("active");
 			leaveHandler(emptySquareList[rndIndex]);
 			updateBoard(emptySquareList[rndIndex]);
-		}
+		} else  {
+			let bestMove = _findBestMove();
+			const squareSlot = document.querySelector(`[data-row="${bestMove.row}"][data-column="${bestMove.col}"]`);
+			squareSlot.textContent = "O";
+			squareSlot.classList.add("active");
+			leaveHandler(squareSlot);
+			updateBoard(squareSlot);
+		} 
 	}
+	// ************* END SECTION ****************
 
 	function _uploadPlayerSign(event, player1, player2 = false) {
 		if (player1.playerActive) {
@@ -139,7 +292,7 @@ const controller = (() => {
 				player1.playerActive = false;
 			}
 		} else {
-			_setPlayerInputY(event);
+			_setPlayerInputO(event);
 			player1.playerActive = true;
 		}
 	}
@@ -150,15 +303,6 @@ const controller = (() => {
 		} else {
 			target.classList.add("squareHoverO");
 		}
-	}
-
-	function _checkFullSquare(squares) {
-		const emptySquaresAvailable = Array.from(squares).filter((square) => square.textContent.length === 0).length;
-		// Board is filled (all squares filled)
-		if (emptySquaresAvailable === 0) {
-			return true;
-		}
-		return false;
 	}
 
 	function _updateScore(winner) {
@@ -196,6 +340,18 @@ const controller = (() => {
 			setName1.textContent = `PLAYER`;
 			setName2.textContent = `BOT`;
 		}
+	}
+
+	function _setPlayerInputX(event) {
+		event.target.textContent = "X";
+		event.target.classList.add("active");
+		updateBoard(event.target);
+	}
+
+	function _setPlayerInputO(event) {
+		event.target.textContent = "O";
+		event.target.classList.add("active");
+		updateBoard(event.target);
 	}
 
 	// ------ PLAYER VS PLAYER --------
@@ -241,10 +397,10 @@ const controller = (() => {
 				announceTurn();
 				_uploadPlayerSign.call(null, event, player1, player2);
 				// Check if we have a winner, IF YES then display result but remove further player inputs
-				if (_checkWinner() !== "") {
-					const { winner, square1, square2, square3 } = _checkWinner();
-					_displayWinner(winner, square1, square2, square3);
-					_updateScore(winner);
+				if (_checkWinner() !== 0) {
+					const evaluationInfo = _checkWinner();
+					_displayWinner(evaluationInfo);
+					_updateScore(evaluationInfo.winner);
 					//stop all user input once winner is reach
 					squares.forEach((square) => {
 						square.removeEventListener("click", clickHandler);
@@ -252,7 +408,8 @@ const controller = (() => {
 					});
 					setTimeout(() => _resetGame(), 2000);
 				} else {
-					if (_checkFullSquare(squares)) {
+					// Check for tie (e.g. board is filled)
+					if (_isFullSquare()) {
 						_displayTie(squares);
 						setTimeout(() => _resetGame(), 2000);
 					}
@@ -279,10 +436,10 @@ const controller = (() => {
 
 		function checkBoardForWinner() {
 			// Check if we have a winner, IF YES then display result but remove further player inputs
-			if (_checkWinner() !== "") {
-				const { winner, square1, square2, square3 } = _checkWinner();
-				_displayWinner(winner, square1, square2, square3);
-				_updateScore(winner);
+			if (_checkWinner() !== 0) {
+				const evaluationInfo = _checkWinner();
+				_displayWinner(evaluationInfo);
+				_updateScore(evaluationInfo.winner);
 				//stop all user input once winner is reach
 				squares.forEach((square) => square.removeEventListener("click", clickHandler));
 				return true;
@@ -330,19 +487,20 @@ const controller = (() => {
 				// Check for winner
 				if (checkBoardForWinner()) {
 					setTimeout(() => _resetGame(), 2000);
-					// Check for tie
-				} else if (_checkFullSquare(squares)) {
+				// Check for tie (e.g. board is filled)
+				} else if (_isFullSquare()) {
 					_displayTie(squares);
 					setTimeout(() => _resetGame(), 2000);
-					// Bot's Turn
+				// Bot's Turn
 				} else {
-					setTimeout(() => {
+					botMoveTimer = setTimeout(() => {
 						_botMove(squares);
 						_displayTurn("Your");
+						botFirstMove = false;
 						if (checkBoardForWinner()) {
 							setTimeout(() => _resetGame(), 2000);
 						} else {
-							if (_checkFullSquare(squares)) {
+							if (_isFullSquare()) {
 								_displayTie(squares);
 								setTimeout(() => _resetGame(), 2000);
 							}
@@ -412,7 +570,6 @@ const gameIntro = (() => {
 				event.preventDefault(); // stop the form from submitting & refreshing page
 				const setDifficulty = document.querySelector("#difficulty").value;
 				_gameOption.classList.add("hidden");
-				console.log(setDifficulty)
 				playerVSbot(setDifficulty);
 			}
 		});
