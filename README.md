@@ -3,8 +3,7 @@ Play with other players or challenge yourself against the impossible bot. Now, g
 
 Link: https://novacat35.github.io/tic-tac-toe/ ❌⭕❌⭕
 
-
-<img width="1440" alt="Screenshot 2023-06-13 at 1 33 38 AM" src="https://github.com/NovaCat35/tic-tac-toe/assets/54908064/42b35750-c9cd-4975-a1be-9ea01a1b0351">
+<img width="1437" alt="Screenshot 2023-06-13 at 2 36 04 AM" src="https://github.com/NovaCat35/tic-tac-toe/assets/54908064/a421ce3c-d047-4213-9488-ef2be814737f">
 
 Learning Goals
 - Factory and module patterns
@@ -13,7 +12,7 @@ Learning Goals
 - More animation practices
 
 Feature:
-- Responsive design
+- It's Responsive!
 - Bot levels
 
 ## Sources
