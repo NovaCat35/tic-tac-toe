@@ -133,7 +133,7 @@ main {
 }
 .game-option h1 {
 	color: var(--h1-color);
-	font-size: calc(2.2rem + 1vw);
+	font-size: calc(2.2rem + 1.3vw);
 	/* font-size: clamp(1.5rem, 1vw, 2.2rem); */
 	font-family: var(--h1-font);
 	animation: flicker 2s linear;
@@ -195,8 +195,8 @@ main {
 }
 .game-option img {
 	object-fit: cover;
-	height: 200px;
-	width: 160px;
+	height: 210px;
+	width: 170px;
 	border-radius: 10px;
 }
 .inputs-container {
@@ -378,6 +378,7 @@ main {
 /*****************/
 /***** FOOTER *****/
 footer {
+	flex-shrink: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
